@@ -1,0 +1,174 @@
+---
+title: "Random Forest"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+setwd("E:/Files/Great Learning/All Courses/3-Data Mining/Project")
+
+```
+
+
+```{r}
+therabank = read.csv("Thera_Bank.csv", sep = ",", header=TRUE)
+table(therabank$Personal.Loan)
+prop.table(table(therabank$Personal.Loan))
+round(prop.table(table(therabank$Personal.Loan)),2)
+```
+```{r}
+set.seed(123)
+library(caTools)
+split = sample.split(therabank$Personal.Loan,SplitRatio = 0.7)
+train = subset(therabank,split == TRUE)
+test = subset(therabank,split == FALSE)
+# check if
+prop.table(table(train$Personal.Loan))
+prop.table(table(test$Personal.Loan))
+```
+```{r}
+# Change few variables to factor wherever you need whole number
+train$ID = as.factor(train$ID)
+train$Education = as.factor(train$Education)
+train$Family.members = as.factor(train$Family.members)
+train$Personal.Loan = as.factor(train$Personal.Loan)
+train$Securities.Account = as.factor(train$Securities.Account)
+train$CD.Account = as.factor(train$CD.Account)
+train$Online = as.factor(train$Online)
+train$CreditCard = as.factor(train$CreditCard)
+head(train)
+str(train)
+```
+```{r}
+nrow(train)
+print(sum(train$Personal.Loan=="1")/nrow(train))
+```
+
+```{r}
+library(randomForest)
+seed=1000
+set.seed(seed)
+rndFor = randomForest(Personal.Loan ~ ., data = train[,-1], 
+                   ntree=501, mtry = 3, nodesize = 10,
+                   importance=TRUE)
+
+print(rndFor)
+
+```
+
+```{r}
+
+rndFor$err.rate
+plot(rndFor, main="")
+legend("topright", c("OOB", "0", "1"), text.col=1:6, lty=1:3, col=1:3)
+title(main="Error Rates Random Forest train")
+
+```
+```{r}
+print(rndFor$importance)
+```
+```{r}
+set.seed(seed)
+tRndFor = tuneRF(x = train[,-c(1,10)], 
+              y=train$Personal.Loan,
+              mtryStart = 3, 
+              ntreeTry = 391, 
+              stepFactor = 1.5, 
+              improve = 0.0001, 
+              trace=TRUE, 
+              plot = TRUE,
+              doBest = TRUE,
+              nodesize = 50, 
+              importance=TRUE
+)
+importance(tRndFor)
+```
+```{r}
+## Scoring syntax
+train$predict.class = predict(tRndFor,train, type="class")
+train$prob1 = predict(tRndFor,train, type="prob")[,"1"]
+tbl=table(train$Personal.Loan, train$predict.class)
+print(tbl)
+print((tbl[1,2]+tbl[2,1])/3500)
+
+```
+
+```{r}
+qs=quantile(train$prob1,prob = seq(0,1,length=11))
+print(qs)
+print(qs[10])
+
+```
+```{r}
+mean((train$Personal.Loan[train$prob1>qs[10]])=="1")
+```
+```{r}
+test$ID = as.factor(test$ID)
+test$Education = as.factor(test$Education)
+test$Family.members = as.factor(test$Family.members)
+test$Personal.Loan = as.factor(test$Personal.Loan)
+test$Securities.Account = as.factor(test$Securities.Account)
+test$CD.Account = as.factor(test$CD.Account)
+test$Online = as.factor(test$Online)
+test$CreditCard = as.factor(test$CreditCard)
+head(test)
+str(test)
+nrow(test)
+```
+```{r}
+test$predict.class2 = predict(tRndFor, test, type="class")
+test$probab = predict(tRndFor,test, type="prob")[,"1"]
+head(test[])
+
+tbl2=table(test$Personal.Loan, test$predict.class2)
+print(tbl2)
+print((tbl2[1,2]+tbl2[2,1])/1500)
+```
+```{r}
+mean((test$Personal.Loan[test$probab>qs[10]])=="1")
+```
+
+```{r}
+
+library(ROCR)
+library(ineq)
+
+train$prob1 = as.numeric(train$prob1)
+train$Personal.Loan = as.numeric(train$Personal.Loan)
+
+predObj = prediction(train$prob1,train$Personal.Loan)
+perf = performance(predObj, "tpr", "fpr")
+plot(perf)
+
+KS = max(perf@y.values[[1]]-perf@x.values[[1]])
+print(KS)
+auc = performance(predObj,"auc"); 
+auc = as.numeric(auc@y.values)
+print(auc)
+
+gini = ineq(train$prob1, type="Gini")
+print(gini)
+```
+
+
+```{r}
+test$probab = as.numeric(test$probab)
+test$Personal.Loan = as.numeric(test$Personal.Loan)
+
+predObj2 = prediction(test$probab,test$Personal.Loan)
+perf2 = performance(predObj2, "tpr", "fpr")
+plot(perf2)
+
+KS2 = max(perf@y.values[[1]]-perf@x.values[[1]])
+print(KS2)
+
+auc2 = performance(predObj2,"auc"); 
+auc2 = as.numeric(auc2@y.values)
+print(auc2)
+
+gini2 = ineq(test$probab, type="Gini")
+print(gini2)
+
+```
+
+
