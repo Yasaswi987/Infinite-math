@@ -1,0 +1,122 @@
+---
+title: "Project - 3"
+author: "Yashaswi"
+date: "October 7, 2019"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+
+setwd("E:/Files/Great Learning/All Courses/3-Data Mining/Project")
+
+```
+
+
+
+```{r}
+#Finding the number of rows and viewing the dataset
+therabankdata = read.csv("Thera_Bank.csv", sep="," ,header=TRUE) 
+newdata = therabankdata[,-1]
+nrow(newdata)
+head(newdata)
+
+
+```
+```{r}
+#Converting to data frame and finding summary
+str(newdata)
+names(newdata)
+summary(newdata)
+
+```
+
+
+
+```{r}
+hist(newdata$Age..in.years.,col="Red",main = "Histogram of Age ",xlab="Age(in years)")
+```
+```{r}
+hist(newdata$Experience..in.years.,col="Red",main = "Histogram of Experience ",xlab="Experience(in years)")
+```
+```{r}
+hist(newdata$Income..in.K.month.,col="Red",main = "Histogram of Income ",xlab="Income(in K )")
+```
+```{r}
+hist(newdata$ZIP.Code,col="Red",main = "Histogram of Zip Code",xlab="Zip Code")
+```
+```{r}
+hist(newdata$Family.members,col="Red",main = "Histogram of Family Members",xlab="Family Members")
+```
+```{r}
+hist(newdata$CCAvg,col="Red",main = "Histogram of Credit Card Average",xlab="Credit Card Average ")
+```
+```{r}
+hist(newdata$Education,col="Red",main = "Histogram of Education",xlab="Education ")
+```
+```{r}
+hist(newdata$Mortgage,col="Red",main = "Histogram of Mortgage",xlab="Mortgage")
+```
+```{r}
+hist(newdata$Personal.Loan,col="Red",main = "Histogram of Personal Loan",xlab="Personal Loan")
+```
+```{r}
+hist(newdata$Securities.Account,col="Red",main = "Histogram of Securities Account",xlab="Securities Account")
+```
+```{r}
+hist(newdata$CD.Account,col="Red",main = "Histogram of Certificate of Deposit Account",xlab="CD Account")
+```
+```{r}
+hist(newdata$Online,col="Red",main = "Histogram of Online",xlab="Online")
+```
+```{r}
+hist(newdata$CreditCard,col="Red",main = "Histogram of Credit Card",xlab="Credit Card")
+```
+```{r}
+plot(newdata$Age..in.years.,newdata$Personal.Loan, main = "Scatterplot of Age and Personal Loan",xlab="Age",ylab="Personal Loan",pch=19, col=c("red","blue"))
+
+```
+```{r}
+plot(newdata$Experience..in.years.,newdata$Education, main = "Scatterplot of Experience and Education",xlab="Experience",ylab="Education",pch=19, col=c("red","blue"))
+
+```
+```{r}
+plot(newdata$Income..in.K.month.,newdata$Securities.Account, main = "Scatterplot of Income and Securities Account",xlab="Income",ylab="Securities Account",pch=19, col=c("red","blue"))
+
+```
+```{r}
+plot(newdata$ZIP.Code,newdata$Online, main = "Scatterplot of Zip Code and Online",xlab="Zip Code",ylab="Online",pch=19, col=c("red","blue"))
+```
+```{r}
+plot(newdata$Family.members,newdata$Mortgage, main = "Scatterplot of Family Members and Mortgage",xlab="Family Members",ylab="Mortagage",pch=19, col=c("red","blue"))
+```
+```{r}
+plot(newdata$Education,newdata$CD.Account, main = "Scatterplot of Education and CD Account",xlab="Education",ylab="CD Account",pch=19, col=c("red","blue"))
+```
+```{r}
+plot(newdata$CCAvg,newdata$CreditCard, main = "Scatterplot of Credit Card Average and Credit Card",xlab="CC Avg",ylab="Credit Card",pch=19, col=c("red","blue"))
+```
+```{r}
+plot(newdata$Age..in.years.,newdata$Income..in.K.month., main = "Scatterplot of Age and Income",xlab="Age",ylab="Income",pch=19, col=c("red","blue"))
+```
+```{r}
+plot(newdata$ZIP.Code,newdata$Family.members, main = "Scatterplot of Zip Code and Family Members",xlab="Zip Code",ylab="Family Members",pch=19, col=c("red","blue"))
+```
+```{r}
+plot(newdata$Experience..in.years.,newdata$Personal.Loan, main = "Scatterplot of Experience and Personal loan",xlab="Experience",ylab="Personal Loan",pch=19, col=c("red","blue"))
+```
+```{r}
+table(therabankdata$Personal.Loan)
+prop.table(table(therabankdata$Personal.Loan))
+round(prop.table(table(therabankdata$Personal.Loan)),2)
+
+```
+```{r}
+
+
+
+
+
+
